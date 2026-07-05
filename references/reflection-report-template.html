@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --bg-card: #ffffff;
+    --fg: #1f2937;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --success: #059669;
+    --success-light: #d1fae5;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --border: #e5e7eb;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    line-height: 1.7;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .header-badge {
+    display: inline-block;
+    padding: 0.35rem 1rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+  }
+
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: var(--fg);
+  }
+
+  .header-meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .header-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  /* Sections */
+  .section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title .icon {
+    font-size: 1.5rem;
+  }
+
+  /* Problem */
+  .problem-box {
+    background: var(--danger-light);
+    border-left: 4px solid var(--danger);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .problem-box h3 {
+    color: var(--danger);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .problem-box p {
+    color: var(--fg);
+    font-size: 0.95rem;
+  }
+
+  /* Root Cause */
+  .cause-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .cause-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .cause-list li:last-child {
+    border-bottom: none;
+  }
+
+  .cause-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-top: 0.15rem;
+  }
+
+  .cause-tag.direct { background: var(--danger-light); color: var(--danger); }
+  .cause-tag.deep { background: var(--warning-light); color: var(--warning); }
+  .cause-tag.system { background: #e0e7ff; color: #4f46e5; }
+
+  /* Fixes */
+  .fix-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--success-light);
+    border-radius: 8px;
+  }
+
+  .fix-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .fix-content h4 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: var(--success);
+  }
+
+  .fix-content p {
+    font-size: 0.9rem;
+    color: var(--fg);
+  }
+
+  /* Score */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .score-card {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .score-card .score {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+
+  .score-card .label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  .score-total {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--accent-light), #f0f9ff);
+    border-radius: 10px;
+  }
+
+  .score-total .total-score {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+
+  .score-total .total-label {
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  /* Measures */
+  .measure-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .measure-item:last-child {
+    border-bottom: none;
+  }
+
+  .measure-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    min-width: 40px;
+  }
+
+  .measure-content h4 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .measure-content p {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  /* Prevention */
+  .prevention-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .prevention-tag {
+    padding: 0.3rem 0.8rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    body { padding: 1rem 0.5rem; }
+    .header { padding: 1.5rem; }
+    .section { padding: 1.5rem; }
+    .header-meta { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-badge">错误复盘报告</div>
+    <h1>{{TITLE}}</h1>
+    <p style="color: var(--muted); margin-top: 0.5rem;">{{SUMMARY}}</p>
+    <div class="header-meta">
+      <span>📅 {{DATE}}</span>
+      <span>👤 {{REVIEWER}}</span>
+      <span>⚠️ 严重程度：{{SEVERITY}}</span>
+      <span>🔄 复发概率：{{RECURRENCE}}%</span>
+    </div>
+  </div>
+
+  <!-- Problem -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎯</span> 问题描述</div>
+    <div class="problem-box">
+      <h3>{{PROBLEM_TITLE}}</h3>
+      <p>{{PROBLEM_DESC}}</p>
+    </div>
+    <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1rem;">
+      <strong>影响范围：</strong>{{IMPACT_SCOPE}}
+    </p>
+  </div>
+
+  <!-- Root Cause -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔍</span> 根因分析</div>
+    <ul class="cause-list">
+      <li>
+        <span class="cause-tag direct">直接原因</span>
+        <span>{{DIRECT_CAUSE}}</span>
+      </li>
+      <li>
+        <span class="cause-tag deep">深层原因</span>
+        <span>{{DEEP_CAUSE_1}}</span>
+      </li>
+      <li>
+        <span class="cause-tag system">系统性</span>
+        <span>{{SYSTEM_CAUSE}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Fixes -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> 纠正措施</div>
+    <div class="fix-item">
+      <div class="fix-icon">✅</div>
+      <div class="fix-content">
+        <h4>立即修复</h4>
+        <p>{{IMMEDIATE_FIX}}</p>
+      </div>
+    </div>
+    <div class="fix-item">
+      <div class="fix-icon">🛡️</div>
+      <div class="fix-content">
+        <h4>长期根治</h4>
+        <p>{{LONG_TERM_FIX}}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prevention -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💊</span> 预防措施（10 条）</div>
+    <div class="measure-item">
+      <div class="measure-num">01</div>
+      <div class="measure-content">
+        <h4>{{PREVENTION_1_TITLE}}</h4>
+        <p>{{PREVENTION_1_DESC}}</p>
+      </div>
+    </div>
+    <div class="measure-item">
+      <div class="measure-num">02</div>
+      <div class="measure-content">
+        <h4>{{PREVENTION_2_TITLE}}</h4>
+        <p>{{PREVENTION_2_DESC}}</p>
+      </div>
+    </div>
+    <div class="measure-item">
+      <div class="measure-num">03</div>
+      <div class="measure-content">
+        <h4>{{PREVENTION_3_TITLE}}</h4>
+        <p>{{PREVENTION_3_DESC}}</p>
+      </div>
+    </div>
+    <div class="prevention-tags">
+      <span class="prevention-tag">流程类</span>
+      <span class="prevention-tag">技术类</span>
+      <span class="prevention-tag">记忆类</span>
+      <span class="prevention-tag">沟通类</span>
+      <span class="prevention-tag">架构类</span>
+    </div>
+  </div>
+
+  <!-- Score -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⭐</span> 将功赎罪评分</div>
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score">{{SCORE_RESPONSE}}</div>
+        <div class="label">响应速度 / 20</div>
+      </div>
+      <div class="score-card">
+        <div class="score">{{SCORE_ROOT_CAUSE}}</div>
+        <div class="label">归因准确性 / 20</div>
+      </div>
+      <div class="score-card">
+        <div class="score">{{SCORE_FIX}}</div>
+        <div class="label">修复彻底性 / 20</div>
+      </div>
+      <div class="score-card">
+        <div class="score">{{SCORE_PREVENTION}}</div>
+        <div class="label">预防充分性 / 20</div>
+      </div>
+      <div class="score-card">
+        <div class="score">{{SCORE_COMMUNICATION}}</div>
+        <div class="label">沟通透明度 / 20</div>
+      </div>
+      <div class="score-total">
+        <div class="total-score">{{SCORE_TOTAL}}</div>
+        <div class="total-label">总分 / 100</div>
+      </div>
+    </div>
+    <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg); border-radius: 8px;">
+      <p style="font-size: 0.9rem; color: var(--muted);"><strong>主要扣分项：</strong>{{SCORE_DEDUCTION}}</p>
+      <p style="font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem;"><strong>改进方向：</strong>{{SCORE_IMPROVEMENT}}</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>由 <a href="#">error-reflection Skill</a> 自动生成 &nbsp;|&nbsp; 基于 PDCA + 5Why + KISS</p>
+    <p style="margin-top: 0.5rem;">生成时间：{{GENERATED_AT}} &nbsp;|&nbsp; 下次 Review：{{NEXT_REVIEW}}</p>
+  </div>
+
+</div>
+</body>
+</html>
